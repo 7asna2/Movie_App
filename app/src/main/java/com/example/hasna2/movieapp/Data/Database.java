@@ -41,7 +41,7 @@ public Database (Context context){
             Log.v(TAG,"number of movies in DB :"+cur.getCount());
             if (cur.getCount() > 0) {
                 cur.moveToFirst();
-                moviesArrayList = new ArrayList<MovieModule>();
+                moviesArrayList = new ArrayList<>();
                 for (int i = 0; i < cur.getCount(); i++) {
                     MovieModule movie = new MovieModule();
                     movie.id=(cur.getString(0));
@@ -49,7 +49,9 @@ public Database (Context context){
                     movie.overview=(cur.getString(2));
                     movie.poster_path=(cur.getString(3));
                     movie.original_language=(cur.getString(4));
-                    movie.release_date=(cur.getString(5));
+                    movie.vote_count=(cur.getString(5));
+                    movie.vote_average=(cur.getString(6));
+                    movie.release_date=(cur.getString(7));
                     moviesArrayList.add(movie);
                     cur.moveToNext();
                 }
@@ -64,7 +66,7 @@ public Database (Context context){
         String favId ;
         if (cur.getCount() > 0) {
             cur.moveToFirst();
-            favoriteMoviesArrayList = new ArrayList<MovieModule>();
+            favoriteMoviesArrayList = new ArrayList<>();
             for (int i = 0; i < cur.getCount(); i++) {
                 favId=cur.getString(0);
                 Cursor cursor = db.selectRaw(MovieModule.TABLE_NAME , MovieModule.MOVIE_ID+" = '"+favId+"'");
@@ -75,7 +77,9 @@ public Database (Context context){
                     movie.overview = (cursor.getString(2));
                     movie.poster_path = (cursor.getString(3));
                     movie.original_language = (cursor.getString(4));
-                    movie.release_date = (cursor.getString(5));
+                    movie.vote_count=(cursor.getString(5));
+                    movie.vote_average=(cursor.getString(6));
+                    movie.release_date = (cursor.getString(7));
                     favoriteMoviesArrayList.add(movie);
                 }
                 cur.moveToNext();

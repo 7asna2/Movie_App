@@ -13,9 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,14 +70,14 @@ public class DetailFragment  extends Fragment {
     }
 
     private void init(final View rootView, final MovieModule movie) {
-        ArrayAdapter<String> in;
         new SaveAndGetImages(getContext(),"" + base_URL + size[3] + movie.poster_path ,(ImageView) rootView.findViewById(R.id.imageView))
-                .getImage((String)movie.id);
+                .getImage(movie.id);
         // Picasso.with(this.getContext()).load("" + base_URL + size[3] + movie.poster_path).into((ImageView) rootView.findViewById(R.id.imageView));
         ((TextView) rootView.findViewById(R.id.title)).setText(movie.title);
         ((TextView) rootView.findViewById(R.id.overview)).setText(movie.overview);
         ((TextView) rootView.findViewById(R.id.date)).setText(movie.release_date);
         ((TextView) rootView.findViewById(R.id.language)).setText(movie.original_language);
+        ((RatingBar)rootView.findViewById(R.id.rating)).setRating( Float.parseFloat(movie.vote_average)/2);
         ImageButton imageButton =((ImageButton)rootView.findViewById(R.id.favorite));
         manageImageButton(imageButton, movie);
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +91,7 @@ public class DetailFragment  extends Fragment {
     }
     public void toggleFavorite (View view,MovieModule movie){
         Database database = new Database(getContext());
-        String update="Error"  ;
+        String update;
         if(database.isFavorite(movie)){
             database.deleteFromFavorite(movie);
             update="removed from favorites";

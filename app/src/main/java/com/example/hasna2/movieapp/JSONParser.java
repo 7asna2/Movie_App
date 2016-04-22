@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 public class JSONParser {
     String JsonStr;
-    final String LOG_TAG=getClass().getSimpleName();
+   // final String LOG_TAG=getClass().getSimpleName();
     final String Result = "results";
     private final String ID = "id";
     private final String OVERVIEW= "overview";
@@ -78,7 +78,22 @@ public class JSONParser {
         String year =date.substring(0,4);
         String month=date.substring(5,7);
         String day=date.substring(8,10);
-        return (day+"/"+month+"/"+year);
+        int month_int=Integer.parseInt(month.trim());
+        switch (month_int){
+            case 1:month="January";break;
+            case 2:month="February";break;
+            case 3:month="March";break;
+            case 4:month="April";break;
+            case 5:month="May";break;
+            case 6:month="June";break;
+            case 7:month="July";break;
+            case 8:month="August";break;
+            case 9:month="September";break;
+            case 10:month="October";break;
+            case 11:month="November";break;
+            case 12:month="December";break;
+        }
+        return (month+" "+year);
     }
 
 }

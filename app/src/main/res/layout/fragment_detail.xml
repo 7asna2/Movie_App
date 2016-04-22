@@ -19,15 +19,24 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp"
             android:layout_weight="1"
             >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Small Text"
+                android:textSize="15dp"
                 android:layout_weight="1"
+                android:paddingLeft="7dp"
+                android:text="Released in:"
+                android:layout_gravity="center_vertical"
+                android:textAlignment="center"
+                android:textColor="@color/gray" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:layout_weight="1"
+                android:paddingLeft="15dp"
                 android:id="@+id/date"
                 android:layout_gravity="center_vertical"
                 android:textAlignment="center"
@@ -35,20 +44,60 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Small Text"
+                android:textSize="15dp"
                 android:layout_weight="1"
+                android:paddingLeft="7dp"
+                android:text="Language:"
+                android:layout_gravity="center_vertical"
+                android:textAlignment="center"
+                android:textColor="@color/gray" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="15dp"
                 android:id="@+id/language"
+                android:textSize="20dp"
+                android:layout_gravity="center_vertical"
+                android:textAlignment="center"
+                android:textColor="@color/black" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:layout_weight="1"
+                android:paddingLeft="7dp"
+                android:text="Duration:"
+                android:layout_gravity="center_vertical"
+                android:textAlignment="center"
+                android:textColor="@color/gray" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:textSize="20dp"
+                android:layout_weight="1"
+                android:text="120 min"
                 android:layout_gravity="center_vertical"
                 android:textAlignment="center"
                 android:textColor="@color/black" />
             <ImageButton
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:paddingLeft="15dp"
                 android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
                 android:id="@+id/favorite"
                 android:background="@android:color/transparent" />
+            <RatingBar
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.1"
+                style="?android:attr/ratingBarStyleIndicator"
+                android:isIndicator="true"
+                 />
         </LinearLayout>
         <ImageView
             android:layout_width="match_parent"
