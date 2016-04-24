@@ -18,9 +18,9 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-       // Stetho.initializeWithDefaults(this);
+        Log.v("211","on create layout"+R.layout.activity_main);
         twoPane =(findViewById(R.id.layout_pane2)!=null);
+
         if (savedInstanceState == null) {
             MoviesFragment moviesFragment = new MoviesFragment();
             moviesFragment.setMovieListener(this);
@@ -41,9 +41,7 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -68,6 +66,7 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
                 fTrans.replace(R.id.layout_pane2, detailFragment).commit();
 
             }else{
+                Log.v("211","phone");
                 Intent intent = new Intent(this,DetailActivity.class);
                // Bundle b = new Bundle();
                 intent.putExtra(Intent.EXTRA_TEXT,movieModule);
@@ -89,9 +88,4 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
         }
 
     }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-
 }

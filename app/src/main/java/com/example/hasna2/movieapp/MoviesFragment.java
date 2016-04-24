@@ -1,6 +1,7 @@
 package com.example.hasna2.movieapp;
 
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -30,6 +31,19 @@ public class MoviesFragment extends Fragment {
     FetchDataThemoMovie fetchDataThemoMovie;
     ImageAdapter imageAdapter;
     MovieModule Movies [];
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+//        mCallbacks = (TaskCallbacks) activity;
+        movieListener=(MovieListener)activity;
+    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+//        mCallbacks = null;
+        movieListener=null;
+    }
 
     public MoviesFragment() {
 
