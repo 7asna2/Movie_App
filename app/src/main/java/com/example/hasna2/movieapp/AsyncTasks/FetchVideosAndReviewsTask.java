@@ -1,4 +1,4 @@
-package com.example.hasna2.movieapp;
+package com.example.hasna2.movieapp.AsyncTasks;
 
 import android.content.Context;
 import android.net.Uri;
@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 
-import com.example.hasna2.movieapp.Data.Review;
+import com.example.hasna2.movieapp.BuildConfig;
+import com.example.hasna2.movieapp.Models.Review;
+import com.example.hasna2.movieapp.Models.Video;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,4 +1,4 @@
-package com.example.hasna2.movieapp;
+package com.example.hasna2.movieapp.Models;
 
 import java.io.Serializable;
 
@@ -31,8 +31,8 @@ public class MovieModule implements Serializable{
     public String vote_count;
     public String vote_average;
 
-    boolean video;
-    boolean adult;
+    public boolean video;
+    public boolean adult;
 
 
 

@@ -9,7 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.example.hasna2.movieapp.MovieModule;
+import com.example.hasna2.movieapp.Models.MovieModule;
 
 import java.util.ArrayList;
 
@@ -61,7 +61,7 @@ public Database (Context context){
         return moviesArrayList;
         }
     public ArrayList<MovieModule> getFavoriteFromDB (){
-        ArrayList<MovieModule> favoriteMoviesArrayList = new ArrayList<>();
+        ArrayList<MovieModule> favoriteMoviesArrayList=null ;
         cur = db.selectAllRaw("favorites");
         String favId ;
         if (cur.getCount() > 0) {
@@ -69,6 +69,7 @@ public Database (Context context){
             favoriteMoviesArrayList = new ArrayList<>();
             for (int i = 0; i < cur.getCount(); i++) {
                 favId=cur.getString(0);
+                Log.v(TAG,"favID:"+favId);
                 Cursor cursor = db.selectRaw(MovieModule.TABLE_NAME , MovieModule.MOVIE_ID+" = '"+favId+"'");
                 if(cursor.getPosition()>=0) {
                     MovieModule movie = new MovieModule();
@@ -110,9 +111,9 @@ public Database (Context context){
         cv.put(MovieModule.MOVIE_ID,movieModule.id);
         db.insertRow("favorites", cv);
     }
-    public ContentValues[] storeMoviesIntoDB (MovieModule movies []) {
+    public void storeMoviesIntoDB (MovieModule movies []) {
         ContentValues cv;
-        //cur = db.selectAllRaw(MovieModule.TABLE_NAME);
+        cur = db.selectAllRaw(MovieModule.TABLE_NAME);
         //Log.v(TAG,"number of movies in DB :"+cur.getCount());
         ContentValues contentValues []=new ContentValues[movies.length] ;
         for (int i=0 ; i<movies.length ; i++) {
@@ -127,10 +128,10 @@ public Database (Context context){
             cv.put(MovieModule.MOVIE_VOTE_AVERAGE ,s.vote_average );
             cv.put(MovieModule.MOVIE_RELEASE_DATE, s.release_date);
             contentValues[i]=cv;
-            //db.insertRow(MovieModule.TABLE_NAME, cv);
+            db.insertRow(MovieModule.TABLE_NAME, cv);
             Log.e(TAG,"inserting in DB ");
         }
-        return contentValues;
+
     }
     public void deleteFromFavorite (MovieModule movie){
         db.deleteRow("favorites",MovieModule.MOVIE_ID+" = '"+movie.id+"'");

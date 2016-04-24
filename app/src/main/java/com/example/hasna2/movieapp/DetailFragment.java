@@ -23,9 +23,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.hasna2.movieapp.AsyncTasks.FetchVideosAndReviewsTask;
 import com.example.hasna2.movieapp.Data.Database;
-import com.example.hasna2.movieapp.Data.Review;
 import com.example.hasna2.movieapp.Data.SaveAndGetImages;
+import com.example.hasna2.movieapp.Models.MovieModule;
+import com.example.hasna2.movieapp.Models.Review;
+import com.example.hasna2.movieapp.Models.Video;
 
 import java.util.ArrayList;
 
@@ -84,6 +87,7 @@ public class DetailFragment  extends Fragment {
     public void setArguments(Bundle args) {
         super.setArguments(args);
         movie = (MovieModule) args.getSerializable("movie");
+
 
 
 

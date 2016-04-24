@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.hasna2.movieapp.Models.MovieModule;
+
 
 public class MainActivity extends ActionBarActivity implements MovieListener {
     boolean twoPane ;
@@ -24,6 +26,7 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
             moviesFragment.setMovieListener(this);
             FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
             fTrans.add(R.id.layout_pane1, moviesFragment).commit();
+
         }
 
     }
@@ -70,6 +73,21 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
                 intent.putExtra(Intent.EXTRA_TEXT,movieModule);
                 startActivity(intent);
             }
+    }
+
+    @Override
+    public void setDefaultOnTablet(MovieModule movieModule) {
+        DetailFragment detailFragment = new DetailFragment();
+        if(twoPane){
+            Log.v("211","its tablet");
+            Bundle b = new Bundle();
+            b.putSerializable("movie",movieModule);
+            detailFragment.setArguments(b);
+            FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
+            fTrans.replace(R.id.layout_pane2, detailFragment).commit();
+
+        }
+
     }
 
     /**

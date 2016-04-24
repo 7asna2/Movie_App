@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.example.hasna2.movieapp.Data.SaveAndGetImages;
+import com.example.hasna2.movieapp.Models.MovieModule;
 
 /**
  * Created by hasna2 on 25-Mar-16.

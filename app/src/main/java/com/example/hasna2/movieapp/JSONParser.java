@@ -1,5 +1,7 @@
 package com.example.hasna2.movieapp;
 
+import com.example.hasna2.movieapp.Models.MovieModule;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package com.example.hasna2.movieapp.Data;
+package com.example.hasna2.movieapp.Models;
 
 /**
  * Created by hasna2 on 23-Apr-16.

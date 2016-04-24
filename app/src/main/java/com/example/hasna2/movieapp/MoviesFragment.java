@@ -1,22 +1,21 @@
 package com.example.hasna2.movieapp;
 
 
-import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.example.hasna2.movieapp.AsyncTasks.FetchDataThemoMovie;
 import com.example.hasna2.movieapp.Data.Database;
-import com.example.hasna2.movieapp.Data.MovieContract;
+import com.example.hasna2.movieapp.Models.MovieModule;
 
 /**
  * Created by hasna2 on 25-Mar-16.
@@ -27,19 +26,13 @@ public class MoviesFragment extends Fragment {
     View rootView;
     GridView gridView;
     TextView textView;
+    String viewBy;
     FetchDataThemoMovie fetchDataThemoMovie;
     ImageAdapter imageAdapter;
     MovieModule Movies [];
 
     public MoviesFragment() {
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_settings) {
-            fetchDataThemoMovie.execute(getViewby());
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -74,8 +67,8 @@ public class MoviesFragment extends Fragment {
 
             }
         };
-        fetchDataThemoMovie.execute(getViewby());
-
+        viewBy=getViewby();
+        fetchDataThemoMovie.execute(viewBy);
 
         return rootView;
     }
@@ -86,6 +79,21 @@ public class MoviesFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        if(!viewBy.equals(getViewby())){
+            viewBy=getViewby();
+            (new FetchDataThemoMovie(getContext(), rootView) {
+                @Override
+                public void updateGrid(MovieModule[] result) {
+                    update(result);
+                }
+
+                @Override
+                public void clearGrid(String reason) {
+                    clear(reason);
+                }
+            }).execute(viewBy);
+        }
+
     }
     public void clear(String reason) {
         if(null!=gridView)
@@ -104,15 +112,16 @@ public class MoviesFragment extends Fragment {
         Movies=result;
         imageAdapter = new ImageAdapter(getActivity(), result);
         gridView.setAdapter(imageAdapter);
-        Database database = new Database(getContext());
-        ContentValues contentValues[] = database.storeMoviesIntoDB(result);
-        getContext().getContentResolver().bulkInsert(MovieContract.MOVIE_ENTRY.CONTENT_URI, contentValues);
+        (new Database(getContext())).storeMoviesIntoDB(result);
+//        ContentValues contentValues[] = (new Database(getContext())).storeMoviesIntoDB(result);
+//        int count =getContext().getContentResolver().bulkInsert(MovieContract.MOVIE_ENTRY.CONTENT_URI, contentValues);
+//        Log.v(LOG_TAG,"num of inserted data"+count);
+        movieListener.setDefaultOnTablet(result[0]);
     }
     public String getViewby(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String view_by = prefs.getString(getString(R.string.viewBy_key), getString(R.string.viewBy_popular));
         return view_by;
-        //Log.v(LOG_TAG, "the viewby = " + view_by);
     }
 
 

@@ -12,8 +12,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.hasna2.movieapp.MovieModule;
-import com.example.hasna2.movieapp.Video;
+import com.example.hasna2.movieapp.Models.MovieModule;
+import com.example.hasna2.movieapp.Models.Review;
+import com.example.hasna2.movieapp.Models.Video;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
