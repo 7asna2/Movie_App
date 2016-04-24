@@ -13,10 +13,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.example.hasna2.movieapp.MovieModule;
+import com.example.hasna2.movieapp.Video;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    String TAG = "hasnaa";
+
     private static String DB_NAME="movie.db";
     public SQLiteDatabase myDataBase;
     private final Context myContext;
@@ -47,7 +48,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public  void deleteRow (String table , String whereClause){
        myDataBase = this.getWritableDatabase();
-        Cursor cursor =null;
         String sql = "DELETE FROM "+table+" WHERE "+whereClause;
         myDataBase.execSQL(sql);
 
@@ -78,7 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /** To select all rows in table. */
     public Cursor selectAllRaw(String tableName) {
         myDataBase = this.getWritableDatabase();
-        Cursor cursor = null;
+        Cursor cursor ;
         cursor =myDataBase.rawQuery("select * from "+tableName,null);
         if(cursor==null)Log.v("211","cursor null");
         return cursor;
@@ -87,7 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /** To select specific row in table. */
     public Cursor selectRaw(String tableName, String wherecol) {
         myDataBase = this.getWritableDatabase();
-        Cursor cursor = null;
+        Cursor cursor;
         String sql = "SELECT * FROM " + tableName+" WHERE "+ wherecol;
         cursor = myDataBase.rawQuery(sql, null);
         if(cursor != null) {
@@ -118,20 +118,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 MovieModule.MOVIE_VOTE_AVERAGE+" TEXT NOT NULL," +
                 MovieModule.MOVIE_RELEASE_DATE +" TEXT NOT NULL "+
                 " );";
-        final String SQL_CREATE_VIDEOS_TABLE = "CREATE TABLE " + MovieModule.Video.TABLE_NAME + " (" +
-                MovieModule.Video.VIDEO_KEY + " TEXT PRIMARY KEY ," +
-                MovieModule.Video.VIDEO_MOVIE_ID + " TEXT NOT NULL," +
-                MovieModule.Video.VIDEO_NAME + " TEXT NOT NULL," +
-                MovieModule.Video.VIDEO_SITE + " TEXT NOT NULL," +
-                " FOREIGN KEY (" +  MovieModule.Video.VIDEO_MOVIE_ID + ") REFERENCES " +
+        final String SQL_CREATE_VIDEOS_TABLE = "CREATE TABLE " + Video.TABLE_NAME + " (" +
+                Video.VIDEO_KEY + " TEXT PRIMARY KEY ," +
+                Video.VIDEO_MOVIE_ID + " TEXT NOT NULL," +
+                Video.VIDEO_NAME + " TEXT NOT NULL," +
+                Video.VIDEO_SITE + " TEXT NOT NULL," +
+                " FOREIGN KEY (" +  Video.VIDEO_MOVIE_ID + ") REFERENCES " +
                 MovieModule.TABLE_NAME + " (" +MovieModule.MOVIE_ID + ")" +
                 " );";
-        final String SQL_CREATE_REVIEWS_TABLE = "CREATE TABLE " + MovieModule.Review.TABLE_NAME + " (" +
-                MovieModule.Review.REVIEW_CONTENT + " TEXT PRIMARY KEY ," +
-                MovieModule.Review.REVIEW_MOVIE_ID + " TEXT NOT NULL," +
-                MovieModule.Review.REVIEW_AUTHOR+ " TEXT NOT NULL," +
-                MovieModule.Video.VIDEO_SITE + " TEXT NOT NULL," +
-                " FOREIGN KEY (" +  MovieModule.Review.REVIEW_MOVIE_ID + ") REFERENCES " +
+        final String SQL_CREATE_REVIEWS_TABLE = "CREATE TABLE " + Review.TABLE_NAME + " (" +
+                Review.REVIEW_CONTENT + " TEXT PRIMARY KEY ," +
+                Review.REVIEW_MOVIE_ID + " TEXT NOT NULL," +
+                Review.REVIEW_AUTHOR+ " TEXT NOT NULL," +
+                Video.VIDEO_SITE + " TEXT NOT NULL," +
+                " FOREIGN KEY (" +  Review.REVIEW_MOVIE_ID + ") REFERENCES " +
                 MovieModule.TABLE_NAME + " (" +MovieModule.MOVIE_ID + ") " +
                 " );";
         final String SQL_CREATE_FAVORITES_TABLE = "CREATE TABLE " + "favorites" + " ("+

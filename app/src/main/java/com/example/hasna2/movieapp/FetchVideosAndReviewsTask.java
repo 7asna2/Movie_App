@@ -1,16 +1,12 @@
 package com.example.hasna2.movieapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+
+import com.example.hasna2.movieapp.Data.Review;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,21 +24,15 @@ import java.util.ArrayList;
 /**
  * Created by hasna2 on 09-Apr-16.
  */
-public class FetchVideosAndReviewsTask extends AsyncTask<String,Void , String[]> {
+public abstract class FetchVideosAndReviewsTask extends AsyncTask<String,Void , String[]> {
     Context context;
     View rootView;
     final String LOG_TAG = "videos";
-    Uri.Builder builder = new Uri.Builder();
     String myUrl;
-    class Video {
-        String Name;
-        String key;
-        String site;
-    }
-    class Review {
-        String author;
-        String content;
-    }
+
+    public abstract void updateVideoList(Video videos[] );
+    public abstract void updateReviewList(Review reviews[]);
+
 
     public FetchVideosAndReviewsTask(Context context,View rootView){
         this.context=context;
@@ -51,45 +41,18 @@ public class FetchVideosAndReviewsTask extends AsyncTask<String,Void , String[]>
 
     @Override
     protected void onPostExecute(String[] result) {
-        final Video[] videosArray;
-        Review [] ReviewsArray;
-        ListView listView = (ListView) rootView.findViewById(R.id.videos_list);
-        ListView reviewslistView = (ListView) rootView.findViewById(R.id.reviews_list);
 
-        try {
-            if (result[0] != null) {
-                videosArray = (new VideoJSONParser(result[0])).getVideosIDs();
-                ArrayAdapter<String> in = new ArrayAdapter<String>(context, R.layout.video, R.id.trialer_name, new ArrayList<String>());
-                listView.setAdapter(in);
-                in.clear();
-                for (Video v : videosArray)
-                    in.add(v.Name);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Uri uri = Uri.parse("https://www.youtube.com/watch?").buildUpon().appendQueryParameter("v", videosArray[i].key).build();
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(uri);
-                        context.startActivity(intent);
-                    }
-                });
-            }
-            if (result[1] != null) {
-                 ReviewsArray = (new ReviewJSONParser(result[1])).getReviewsIDs();
-                ArrayAdapter<String> reviewsAdapter = new ArrayAdapter<String>(context, R.layout.review_list_item, R.id.expandable_text, new ArrayList<String>());
 
-                reviewslistView.setAdapter(reviewsAdapter);
-                reviewsAdapter.clear();
-                for (Review v : ReviewsArray)
-                    reviewsAdapter.add(v.content);
+            try {
+                if (result[0] != null)
+                    updateVideoList((new VideoJSONParser(result[0])).getVideos());
+                if(result[1]!=null)
+                    updateReviewList((new ReviewJSONParser(result[1])).getReviewsIDs());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        finally {
-            setListViewHeightBasedOnChildren(reviewslistView);
-            setListViewHeightBasedOnChildren(listView);
-        }
+
 
     }
 
@@ -145,7 +108,7 @@ public class FetchVideosAndReviewsTask extends AsyncTask<String,Void , String[]>
             this.JSONstr = JSONstr;
         }
 
-        public Video[] getVideosIDs() throws JSONException {
+        public Video[] getVideos() throws JSONException {
             ArrayList<Video> videosArray = new ArrayList<>();
             JSONObject videosJson = new JSONObject(JSONstr);
             JSONArray JSONVideosArray = videosJson.getJSONArray(RESULT);
@@ -239,25 +202,6 @@ public class FetchVideosAndReviewsTask extends AsyncTask<String,Void , String[]>
         return JsonStr;
     }
 
-    private static void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-            return;
-
-        int desiredWidth = ListView.MeasureSpec.makeMeasureSpec(listView.getWidth(), ListView.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ListView.LayoutParams.WRAP_CONTENT));
-
-            view.measure(desiredWidth, ListView.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-    }
 }
 
 

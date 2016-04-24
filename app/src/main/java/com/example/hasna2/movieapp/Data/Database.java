@@ -35,7 +35,7 @@ public Database (Context context){
    [WHERE condition];
    */
     public ArrayList<MovieModule> getMoviesFromDB (){
-        ArrayList<MovieModule> moviesArrayList = null;
+        ArrayList<MovieModule> moviesArrayList = new ArrayList<>();
 
             cur = db.selectAllRaw(MovieModule.TABLE_NAME);
             Log.v(TAG,"number of movies in DB :"+cur.getCount());
@@ -61,7 +61,7 @@ public Database (Context context){
         return moviesArrayList;
         }
     public ArrayList<MovieModule> getFavoriteFromDB (){
-        ArrayList<MovieModule> favoriteMoviesArrayList = null;
+        ArrayList<MovieModule> favoriteMoviesArrayList = new ArrayList<>();
         cur = db.selectAllRaw("favorites");
         String favId ;
         if (cur.getCount() > 0) {
@@ -110,11 +110,13 @@ public Database (Context context){
         cv.put(MovieModule.MOVIE_ID,movieModule.id);
         db.insertRow("favorites", cv);
     }
-    public void storeMoviesIntoDB (MovieModule movies []) {
+    public ContentValues[] storeMoviesIntoDB (MovieModule movies []) {
         ContentValues cv;
         //cur = db.selectAllRaw(MovieModule.TABLE_NAME);
         //Log.v(TAG,"number of movies in DB :"+cur.getCount());
-        for (MovieModule s : movies) {
+        ContentValues contentValues []=new ContentValues[movies.length] ;
+        for (int i=0 ; i<movies.length ; i++) {
+            MovieModule s=movies[i];
             cv = new ContentValues();
             cv.put(MovieModule.MOVIE_ID, s.id);
             cv.put(MovieModule.MOVIE_TITLE, s.title);
@@ -124,9 +126,11 @@ public Database (Context context){
             cv.put(MovieModule.MOVIE_VOTE_COUNT ,s.vote_count );
             cv.put(MovieModule.MOVIE_VOTE_AVERAGE ,s.vote_average );
             cv.put(MovieModule.MOVIE_RELEASE_DATE, s.release_date);
-            db.insertRow(MovieModule.TABLE_NAME, cv);
+            contentValues[i]=cv;
+            //db.insertRow(MovieModule.TABLE_NAME, cv);
             Log.e(TAG,"inserting in DB ");
         }
+        return contentValues;
     }
     public void deleteFromFavorite (MovieModule movie){
         db.deleteRow("favorites",MovieModule.MOVIE_ID+" = '"+movie.id+"'");

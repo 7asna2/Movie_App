@@ -34,6 +34,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.hasna2.movieapp.MainActivity" />
         </activity>
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".Data.MoviesProvider"
+            android:exported="false"
+            android:syncable="true" />
     </application>
 
 </manifest>

@@ -8,6 +8,7 @@
     <string name="ViewBy_title">View by</string>
     <string name="viewBy_key">view_by</string>
     <string name="action_share">share</string>
+    <string name="content_authority">com.example.hasna2.movieapp</string>
 
     <!-- poular and rating in setting array -->
     <string name="viewBy_popular_label">Most popular</string>

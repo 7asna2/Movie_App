@@ -7,8 +7,21 @@
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:columnWidth="150dp"
+        android:stretchMode="columnWidth"
         android:numColumns="auto_fit"
+        android:gravity="center"
         android:id="@+id/posters_Grid"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/no_internet"
+        android:text="NO Internet Connection"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/gray"
+        android:textSize="15dp"
+        android:visibility="gone"/>
 
 
 
