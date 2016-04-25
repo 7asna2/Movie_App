@@ -4,9 +4,11 @@ package com.example.hasna2.movieapp.Data;
  * Created by hasna2 on 15-Apr-16.
  */
 
+import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 import com.example.hasna2.movieapp.Models.MovieModule;
@@ -16,70 +18,67 @@ import java.util.ArrayList;
 
 
 public class Database {
-    String TAG ="hasnaa";
+
+    String LOG_TAG = ContentProvider.class.getSimpleName();
     Context context;
-    DatabaseHelper db;
+//    DatabaseHelper db;
     Cursor cur;
 
-public Database (Context context){
-    this.context=context;
-    db = new DatabaseHelper(context);
-}
-
-
-    //public ArrayList<MovieModule.Video>
-    //@ToDo :get and set all data types
-    /*INSERT INTO first_table_name [(column1, column2, ... columnN)]
-   SELECT column1, column2, ...columnN
-   FROM second_table_name
-   [WHERE condition];
-   */
-    public ArrayList<MovieModule> getMoviesFromDB (){
+    public Database(Context context) {
+        this.context = context;
+    }
+    public ArrayList<MovieModule> getLatestResponseFromDB() {
         ArrayList<MovieModule> moviesArrayList = new ArrayList<>();
-
-            cur = db.selectAllRaw(MovieModule.TABLE_NAME);
-            Log.v(TAG,"number of movies in DB :"+cur.getCount());
-            if (cur.getCount() > 0) {
-                cur.moveToFirst();
-                moviesArrayList = new ArrayList<>();
-                for (int i = 0; i < cur.getCount(); i++) {
-                    MovieModule movie = new MovieModule();
-                    movie.id=(cur.getString(0));
-                    movie.title=(cur.getString(1));
-                    movie.overview=(cur.getString(2));
-                    movie.poster_path=(cur.getString(3));
-                    movie.original_language=(cur.getString(4));
-                    movie.vote_count=(cur.getString(5));
-                    movie.vote_average=(cur.getString(6));
-                    movie.release_date=(cur.getString(7));
-                    moviesArrayList.add(movie);
-                    cur.moveToNext();
-                }
-            }
-            cur.close();
-            db.close();
-        return moviesArrayList;
-        }
-    public ArrayList<MovieModule> getFavoriteFromDB (){
-        ArrayList<MovieModule> favoriteMoviesArrayList=null ;
-        cur = db.selectAllRaw("favorites");
-        String favId ;
+        Uri uri=MovieContract.RESPONSE_ENTRY.CONTENT_URI;
+        cur = context.getContentResolver().query(uri,null,null,null,null);
+        Log.v(LOG_TAG, "number of movies in DB :" + cur.getCount());
+        String responseid;
         if (cur.getCount() > 0) {
             cur.moveToFirst();
-            favoriteMoviesArrayList = new ArrayList<>();
+            moviesArrayList = new ArrayList<>();
             for (int i = 0; i < cur.getCount(); i++) {
-                favId=cur.getString(0);
-                Log.v(TAG,"favID:"+favId);
-                Cursor cursor = db.selectRaw(MovieModule.TABLE_NAME , MovieModule.MOVIE_ID+" = '"+favId+"'");
-                if(cursor.getPosition()>=0) {
+                responseid = cur.getString(0);
+                Uri uri2 = MovieContract.MOVIE_ENTRY.buildMovieWithId(responseid);
+                Cursor cursor = context.getContentResolver().query(uri2, null, null, null, null);
+                if (cursor.getPosition() >= 0) {
                     MovieModule movie = new MovieModule();
                     movie.id = (cursor.getString(0));
                     movie.title = (cursor.getString(1));
                     movie.overview = (cursor.getString(2));
                     movie.poster_path = (cursor.getString(3));
                     movie.original_language = (cursor.getString(4));
-                    movie.vote_count=(cursor.getString(5));
-                    movie.vote_average=(cursor.getString(6));
+                    movie.vote_count = (cursor.getString(5));
+                    movie.vote_average = (cursor.getString(6));
+                    movie.release_date = (cursor.getString(7));
+                    moviesArrayList.add(movie);
+                }
+                cur.moveToNext();
+            }
+        }
+        return moviesArrayList;
+    }
+
+    public ArrayList<MovieModule> getFavoriteFromDB() {
+        ArrayList<MovieModule> favoriteMoviesArrayList = null;
+        Uri uri=MovieContract.FAVORITES_ENTRY.CONTENT_URI;
+        cur = context.getContentResolver().query(uri,null,null,null,null);
+        String favId;
+        if (cur.getCount() > 0) {
+            cur.moveToFirst();
+            favoriteMoviesArrayList = new ArrayList<>();
+            for (int i = 0; i < cur.getCount(); i++) {
+                favId = cur.getString(0);
+                Uri uri2=MovieContract.MOVIE_ENTRY.buildMovieWithId(favId);
+                Cursor cursor = context.getContentResolver().query(uri2,null,null,null,null);
+                if (cursor.getPosition() >= 0) {
+                    MovieModule movie = new MovieModule();
+                    movie.id = (cursor.getString(0));
+                    movie.title = (cursor.getString(1));
+                    movie.overview = (cursor.getString(2));
+                    movie.poster_path = (cursor.getString(3));
+                    movie.original_language = (cursor.getString(4));
+                    movie.vote_count = (cursor.getString(5));
+                    movie.vote_average = (cursor.getString(6));
                     movie.release_date = (cursor.getString(7));
                     favoriteMoviesArrayList.add(movie);
                 }
@@ -87,54 +86,56 @@ public Database (Context context){
             }
         }
         cur.close();
-        db.close();
-        return favoriteMoviesArrayList ;
+        return favoriteMoviesArrayList;
     }
-    public boolean isFavorite (MovieModule movieModule){
 
-        cur = db.selectAllRaw("favorites");
-        String movieId=movieModule.id;
-        if (cur.getCount() > 0) {
-            cur.moveToFirst();
-            for (int i = 0; i < cur.getCount(); i++) {
-                if(movieId.equals(cur.getString(0)))
+    public boolean isFavorite(MovieModule movieModule) {
+        Uri uri=MovieContract.FAVORITES_ENTRY.buildFavoriteWithID(movieModule.id);
+        cur = context.getContentResolver().query(uri,null,null,null,null);
+        if (cur.getCount() > 0)
                     return true;
-                cur.moveToNext();
-            }
-        }
         cur.close();
-        db.close();
         return false;
     }
-    public void saveToFavoriteDB (MovieModule movieModule){
-        ContentValues cv=new ContentValues();
-        cv.put(MovieModule.MOVIE_ID,movieModule.id);
-        db.insertRow("favorites", cv);
+
+    public void saveToFavoriteDB(MovieModule movieModule) {
+        ContentValues cv = new ContentValues();
+        cv.put(MovieModule.MOVIE_ID, movieModule.id);
+        Uri uri=context.getContentResolver().insert(MovieContract.FAVORITES_ENTRY.CONTENT_URI,cv);
     }
-    public void storeMoviesIntoDB (MovieModule movies []) {
+
+    public void deleteLatestResponse(){
+        context.getContentResolver().delete(MovieContract.RESPONSE_ENTRY.CONTENT_URI,null,null);
+    }
+
+    public void storeLastResponseIntoDB(MovieModule movies[]) {
+        deleteLatestResponse();
         ContentValues cv;
-        cur = db.selectAllRaw(MovieModule.TABLE_NAME);
-        //Log.v(TAG,"number of movies in DB :"+cur.getCount());
-        ContentValues contentValues []=new ContentValues[movies.length] ;
-        for (int i=0 ; i<movies.length ; i++) {
-            MovieModule s=movies[i];
+        ContentValues contentValues[] = new ContentValues[movies.length];
+        ContentValues contentValues2[] = new ContentValues[movies.length];
+        for (int i = 0; i < movies.length; i++) {
+            MovieModule s = movies[i];
             cv = new ContentValues();
+            contentValues2[i]=new ContentValues();
+            contentValues2[i].put(MovieModule.MOVIE_ID, s.id);
             cv.put(MovieModule.MOVIE_ID, s.id);
             cv.put(MovieModule.MOVIE_TITLE, s.title);
             cv.put(MovieModule.MOVIE_OVERVIEW, s.overview);
             cv.put(MovieModule.MOVIE_POSTER_PATH, s.poster_path);
             cv.put(MovieModule.MOVIE_ORIGINAL_LANGUAGE, s.original_language);
-            cv.put(MovieModule.MOVIE_VOTE_COUNT ,s.vote_count );
-            cv.put(MovieModule.MOVIE_VOTE_AVERAGE ,s.vote_average );
+            cv.put(MovieModule.MOVIE_VOTE_COUNT, s.vote_count);
+            cv.put(MovieModule.MOVIE_VOTE_AVERAGE, s.vote_average);
             cv.put(MovieModule.MOVIE_RELEASE_DATE, s.release_date);
-            contentValues[i]=cv;
-            db.insertRow(MovieModule.TABLE_NAME, cv);
-            Log.e(TAG,"inserting in DB ");
+            contentValues[i] = cv;
+            Log.e(LOG_TAG, "inserting in DB ");
         }
-
-    }
-    public void deleteFromFavorite (MovieModule movie){
-        db.deleteRow("favorites",MovieModule.MOVIE_ID+" = '"+movie.id+"'");
-    }
+        context.getContentResolver().bulkInsert(MovieContract.MOVIE_ENTRY.CONTENT_URI, contentValues);
+        int count =context.getContentResolver().bulkInsert(MovieContract.RESPONSE_ENTRY.CONTENT_URI, contentValues2);
+        Log.e(LOG_TAG, count+"inserted movies ");
     }
 
+    public void deleteFromFavorite(MovieModule movie) {
+        Uri uri=MovieContract.FAVORITES_ENTRY.buildFavoriteWithID(movie.id);
+        context.getContentResolver().delete(uri,null,null);
+    }
+}

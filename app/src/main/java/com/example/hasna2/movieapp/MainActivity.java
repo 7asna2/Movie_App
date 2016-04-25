@@ -13,25 +13,25 @@ import com.example.hasna2.movieapp.Models.MovieModule;
 
 
 public class MainActivity extends ActionBarActivity implements MovieListener {
+    MoviesFragment moviesFragment;
     boolean twoPane ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.v("211","on create layout"+R.layout.activity_main);
         twoPane =(findViewById(R.id.layout_pane2)!=null);
-
+        Log.v("211","helloo from oncreate main activity ");
         if (savedInstanceState == null) {
-            MoviesFragment moviesFragment = new MoviesFragment();
+            Log.v("211","NO saveed");
+            moviesFragment = new MoviesFragment();
+            if(moviesFragment==null)Log.v("211","1 fragment null");
+            if(this==null)Log.v("211"," 1this null");
             moviesFragment.setMovieListener(this);
             FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
             fTrans.add(R.id.layout_pane1, moviesFragment).commit();
-
         }
 
     }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -55,12 +55,14 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
 
     @Override
     public void setSelectedMovie(MovieModule movieModule) {
-        DetailFragment detailFragment = new DetailFragment();
+        twoPane =(findViewById(R.id.layout_pane2)!=null);
+        Log.v("211","two pane:"+twoPane);
 
             if(twoPane){
                 Log.v("211","its tablet");
                 Bundle b = new Bundle();
                 b.putSerializable("movie",movieModule);
+                DetailFragment detailFragment = new DetailFragment();
                 detailFragment.setArguments(b);
                 FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
                 fTrans.replace(R.id.layout_pane2, detailFragment).commit();
@@ -76,16 +78,18 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
 
     @Override
     public void setDefaultOnTablet(MovieModule movieModule) {
-        DetailFragment detailFragment = new DetailFragment();
-        if(twoPane){
-            Log.v("211","its tablet");
+
+        if(twoPane) {
+            Log.v("211", "its tablet");
             Bundle b = new Bundle();
-            b.putSerializable("movie",movieModule);
+            b.putSerializable("movie", movieModule);
+            DetailFragment detailFragment = new DetailFragment();
             detailFragment.setArguments(b);
             FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
             fTrans.replace(R.id.layout_pane2, detailFragment).commit();
 
         }
+
 
     }
 }

@@ -1,5 +1,6 @@
 package com.example.hasna2.movieapp;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,6 +42,8 @@ public class DetailFragment  extends Fragment {
     String base_URL = "http://image.tmdb.org/t/p/";
     String size[] = {"w92", "w154", "w185", "w342", "w500", "w780", "original"};
     MovieModule movie;
+    String shareTrailer;
+    ShareActionProvider mShareActionProvider;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -51,7 +54,8 @@ public class DetailFragment  extends Fragment {
         if (item.getItemId() == R.id.action_share_) {
             Toast toast = Toast.makeText(getActivity(), "jskh", Toast.LENGTH_SHORT);
             toast.show();
-            startActivity(getShareIntent());
+           // startActivity(getShareIntent());
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -60,11 +64,9 @@ public class DetailFragment  extends Fragment {
         inflater.inflate(R.menu.menu_detail, menu);
 
         MenuItem item = menu.findItem(R.id.action_share_);
-        ShareActionProvider mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
         if (!(mShareActionProvider == null))
             mShareActionProvider.setShareIntent(getShareIntent());
-        else
-            Log.d(LOG_TAG, "Share Action Provider is null");
 
     }
 
@@ -94,7 +96,7 @@ public class DetailFragment  extends Fragment {
     }
 
     private void init(final View rootView, final MovieModule movie) {
-        new SaveAndGetImages(getContext(), "" + base_URL + size[3] + movie.poster_path, (ImageView) rootView.findViewById(R.id.imageView))
+        new SaveAndGetImages(getContext(), "" + base_URL + size[2] + movie.poster_path, (ImageView) rootView.findViewById(R.id.imageView))
                 .getImage(movie.id);
         ((TextView) rootView.findViewById(R.id.title)).setText(movie.title);
         ((TextView) rootView.findViewById(R.id.overview)).setText(movie.overview);
@@ -130,6 +132,9 @@ public class DetailFragment  extends Fragment {
             database.deleteFromFavorite(movie);
             update = "removed from favorites";
         } else {
+            ContentValues cv=new ContentValues();
+            cv.put(MovieModule.MOVIE_ID,movie.id);
+//            Uri uri=getContext().getContentResolver().insert(MovieContract.FAVORITES_ENTRY.CONTENT_URI,cv);
             database.saveToFavoriteDB(movie);
             update = "added to favorites";
         }
@@ -149,16 +154,18 @@ public class DetailFragment  extends Fragment {
 
     public Intent getShareIntent() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, movie.title + "\n" + movie.overview);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, movie.title + "\n" + movie.overview+"\n"+shareTrailer);
         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile((new SaveAndGetImages(getContext(), null, null).getOutputMediaFile(movie.id))));  //optional//use this when you want to send an image
-        shareIntent.setType("image/jpeg");
+        shareIntent.setType("*/*");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        // shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-        // startActivity(Intent.createChooser(shareIntent, "send"));
         return shareIntent;
     }
 
     public void updateVideos(final Video videos[]) {
+        final String YOUTUBE_BASE="https://www.youtube.com/watch?";
+        shareTrailer=YOUTUBE_BASE+"v="+videos[0].key;
+        if (!(mShareActionProvider == null))
+            mShareActionProvider.setShareIntent(getShareIntent());
         ListView videosListView = (ListView) rootView.findViewById(R.id.videos_list);
         ArrayAdapter<String> in = new ArrayAdapter<>(getContext(), R.layout.video, R.id.trialer_name, new ArrayList<String>());
         videosListView.setAdapter(in);
@@ -168,7 +175,7 @@ public class DetailFragment  extends Fragment {
         videosListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Uri uri = Uri.parse("https://www.youtube.com/watch?").buildUpon().appendQueryParameter("v", videos[i].key).build();
+                Uri uri = Uri.parse(YOUTUBE_BASE).buildUpon().appendQueryParameter("v", videos[i].key).build();
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(uri);
                 getContext().startActivity(intent);

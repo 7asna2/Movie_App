@@ -34,7 +34,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        return ""+base_URL + size[3] +movies[i].poster_path;
+        return ""+base_URL + size[2] +movies[i].poster_path;
     }
 
     @Override
