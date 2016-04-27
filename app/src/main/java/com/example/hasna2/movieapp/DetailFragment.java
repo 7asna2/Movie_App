@@ -154,7 +154,10 @@ public class DetailFragment  extends Fragment {
 
     public Intent getShareIntent() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, movie.title + "\n" + movie.overview+"\n"+shareTrailer);
+        String linkAndText =  movie.title + "\n" + movie.overview+"\n";
+        if(shareTrailer != null)linkAndText+=shareTrailer;
+        shareIntent.putExtra(Intent.EXTRA_TEXT,linkAndText
+        );
         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile((new SaveAndGetImages(getContext(), null, null).getOutputMediaFile(movie.id))));  //optional//use this when you want to send an image
         shareIntent.setType("*/*");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
