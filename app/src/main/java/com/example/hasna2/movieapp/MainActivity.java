@@ -13,24 +13,31 @@ import com.example.hasna2.movieapp.Models.MovieModule;
 
 
 public class MainActivity extends ActionBarActivity implements MovieListener {
-    MoviesFragment moviesFragment;
+    String DETAILFRAGMENT_TAG = "detail fragment";
     boolean twoPane ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         twoPane =(findViewById(R.id.layout_pane2)!=null);
-        Log.v("211","helloo from oncreate main activity ");
-        if (savedInstanceState == null) {
-            Log.v("211","NO saveed");
-            moviesFragment = new MoviesFragment();
-            if(moviesFragment==null)Log.v("211","1 fragment null");
-            if(this==null)Log.v("211"," 1this null");
-            moviesFragment.setMovieListener(this);
-            FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
-            fTrans.add(R.id.layout_pane1, moviesFragment).commit();
+//        moviesFragment = new MoviesFragment();
+//
+//        Log.v("211","helloo from oncreate main activity ");
+//        if (savedInstanceState == null) {
+//            Log.v("211","NO saveed");
+//            if(moviesFragment==null)Log.v("211","1 fragment null");
+//            if(this==null)Log.v("211"," 1this null");
+//            FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
+//            fTrans.add(R.id.layout_pane1, moviesFragment).commit();
+//        }
+        if(twoPane) {
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.layout_pane2, new DetailFragment(), DETAILFRAGMENT_TAG)
+                        .commit();
+//                moviesFragment.setMovieListener(this);
+            }
         }
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

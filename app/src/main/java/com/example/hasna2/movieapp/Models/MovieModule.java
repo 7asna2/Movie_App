@@ -6,7 +6,6 @@ import java.io.Serializable;
  * Created by hasna2 on 08-Apr-16.
  */
 
-// @ToDo: seperate every class in a file and save them in one package
 
 public class MovieModule implements Serializable{
 
