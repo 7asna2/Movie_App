@@ -9,7 +9,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.example.hasna2.movieapp.Models.MovieModule;
 
@@ -49,7 +48,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         myDataBase = this.getWritableDatabase();
         Cursor cursor ;
         cursor =myDataBase.rawQuery("select * from "+tableName,null);
-        if(cursor==null)Log.v("211","cursor null");
         return cursor;
     }
 
@@ -93,6 +91,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_FAVORITES_TABLE = "CREATE TABLE " + "favorites" + " ("+
                 MovieModule.MOVIE_ID + " TEXT PRIMARY KEY "+" );";
 
+
+        // store latest response from the web
         final String SQL_CREATE_RESPONSE_TABLE = "CREATE TABLE " + MovieContract.RESPONSE_ENTRY.TABLE_NAME + " ("+
                 MovieModule.MOVIE_ID + " TEXT PRIMARY KEY "+" );";
 

@@ -7,7 +7,7 @@
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="150dp"
+        android:columnWidth="130dp"
         android:stretchMode="columnWidth"
         android:numColumns="auto_fit"
         android:gravity="center"
@@ -19,7 +19,7 @@
         android:text="NO Internet Connection"
         android:layout_gravity="center"
         android:gravity="center"
-        android:textColor="@color/gray"
+        android:textColor="@color/grey"
         android:textSize="15dp"
         android:visibility="gone"/>
 

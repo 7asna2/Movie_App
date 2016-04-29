@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,7 +37,8 @@ import java.util.ArrayList;
  */
 public class DetailFragment  extends Fragment {
     View rootView;
-    final String LOG_TAG = "fff";
+
+    final String LOG_TAG = DetailFragment.class.getSimpleName();
     String base_URL = "http://image.tmdb.org/t/p/";
     String size[] = {"w92", "w154", "w185", "w342", "w500", "w780", "original"};
     MovieModule movie;
@@ -51,12 +51,6 @@ public class DetailFragment  extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_share_) {
-            Toast toast = Toast.makeText(getActivity(), "jskh", Toast.LENGTH_SHORT);
-            toast.show();
-           // startActivity(getShareIntent());
-
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -73,11 +67,11 @@ public class DetailFragment  extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setRetainInstance(true);
         rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
             movie = (MovieModule) intent.getSerializableExtra(Intent.EXTRA_TEXT);
-            if (movie == null) Log.v(LOG_TAG, "movie is null :3 :3 ");
         }
         init(rootView, movie);
 
@@ -89,14 +83,11 @@ public class DetailFragment  extends Fragment {
     public void setArguments(Bundle args) {
         super.setArguments(args);
         movie = (MovieModule) args.getSerializable("movie");
-
-
-
-
     }
 
+    //init components of the detail fragment
     private void init(final View rootView, final MovieModule movie) {
-        new SaveAndGetImages(getContext(), "" + base_URL + size[2] + movie.poster_path, (ImageView) rootView.findViewById(R.id.imageView))
+        new SaveAndGetImages(getContext(), "" + base_URL + size[3] + movie.poster_path, (ImageView) rootView.findViewById(R.id.imageView))
                 .getImage(movie.id);
         ((TextView) rootView.findViewById(R.id.title)).setText(movie.title);
         ((TextView) rootView.findViewById(R.id.overview)).setText(movie.overview);
@@ -125,6 +116,7 @@ public class DetailFragment  extends Fragment {
         fetchVideosAndReviewsTask.execute(movie.id);
     }
 
+    //toggle to add to favorites and remove from it
     public void toggleFavorite(View view, MovieModule movie) {
         Database database = new Database(getContext());
         String update;
@@ -144,6 +136,7 @@ public class DetailFragment  extends Fragment {
         toast.show();
     }
 
+    //control favorite button image
     public void manageImageButton(View view, MovieModule movie) {
         Database database = new Database(getContext());
         if (database.isFavorite(movie))
@@ -158,12 +151,14 @@ public class DetailFragment  extends Fragment {
         if(shareTrailer != null)linkAndText+=shareTrailer;
         shareIntent.putExtra(Intent.EXTRA_TEXT,linkAndText
         );
+        //getting share image
         shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile((new SaveAndGetImages(getContext(), null, null).getOutputMediaFile(movie.id))));  //optional//use this when you want to send an image
         shareIntent.setType("*/*");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         return shareIntent;
     }
 
+    //update videos list view
     public void updateVideos(final Video videos[]) {
         final String YOUTUBE_BASE="https://www.youtube.com/watch?";
         shareTrailer=YOUTUBE_BASE+"v="+videos[0].key;
@@ -187,12 +182,15 @@ public class DetailFragment  extends Fragment {
         setListViewHeightBasedOnChildren(videosListView);
     }
 
+    //update reviews list view
     public void updateReviews(Review reviews[]) {
         ListView reviewsListView = (ListView) rootView.findViewById(R.id.reviews_list);
         ReviewAdapter reviewsAdapter=new ReviewAdapter(getContext(),reviews);
         reviewsListView.setAdapter(reviewsAdapter);
         setListViewHeightBasedOnChildren(reviewsListView);
     }
+
+    //determine specific height for the list view
     private static void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
@@ -212,8 +210,6 @@ public class DetailFragment  extends Fragment {
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
     }
-
-
 }
 
 

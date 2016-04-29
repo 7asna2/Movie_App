@@ -1,6 +1,7 @@
 package com.example.hasna2.movieapp;
 
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  */
 public class MoviesFragment extends Fragment {
     MovieListener movieListener;
-    final String LOG_TAG = "fra";
+    final String LOG_TAG = MoviesFragment.class.getSimpleName();
     View rootView;
     GridView gridView;
     TextView textView;
@@ -35,6 +36,13 @@ public class MoviesFragment extends Fragment {
 
 
     public MoviesFragment() {
+
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        movieListener = (MovieListener) activity;
 
     }
 
@@ -109,6 +117,7 @@ public class MoviesFragment extends Fragment {
 
     }
 
+
     public void clear(String reason) {
         if (null != gridView)
             gridView.setVisibility(View.GONE);
@@ -121,6 +130,7 @@ public class MoviesFragment extends Fragment {
 
     }
 
+    //update the grid
     public void update(MovieModule[] result) {
         textView.setVisibility(View.GONE);
         gridView.setVisibility(View.VISIBLE);
@@ -130,6 +140,7 @@ public class MoviesFragment extends Fragment {
         movieListener.setDefaultOnTablet(result[0]);
     }
 
+    //get user selection for the view by
     public String getViewby() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String view_by = prefs.getString(getString(R.string.viewBy_key), getString(R.string.viewBy_popular));

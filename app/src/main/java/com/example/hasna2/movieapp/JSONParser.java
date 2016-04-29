@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class JSONParser {
     String JsonStr;
-   // final String LOG_TAG=getClass().getSimpleName();
+    final String LOG_TAG=getClass().getSimpleName();
     final String Result = "results";
     private final String ID = "id";
     private final String OVERVIEW= "overview";
@@ -35,8 +35,6 @@ public class JSONParser {
 
     public ArrayList<MovieModule> getMoviesArray()
             throws JSONException {
-
-        // These are the names of the JSON objects that need to be extracted.
 
         ArrayList<MovieModule> movieModulesArray = new ArrayList<>();
         JSONObject MoviesJson = new JSONObject(JsonStr);
@@ -62,8 +60,6 @@ public class JSONParser {
             movieModulesArray.add(temp);
 
         }
-        //for (String s : poster_URL)
-        //    Log.v(LOG_TAG, "Movie Path: " + s);
         return movieModulesArray;
     }
 

@@ -20,9 +20,8 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         twoPane =(findViewById(R.id.layout_pane2)!=null);
-        Log.v("211","helloo from oncreate main activity ");
+
         if (savedInstanceState == null) {
-            Log.v("211","NO saveed");
             moviesFragment = new MoviesFragment();
             moviesFragment.setMovieListener(this);
             FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
@@ -53,11 +52,10 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
 
     @Override
     public void setSelectedMovie(MovieModule movieModule) {
-        twoPane =(findViewById(R.id.layout_pane2)!=null);
+//        twoPane =(findViewById(R.id.layout_pane2)!=null);
         Log.v("211","two pane:"+twoPane);
 
             if(twoPane){
-                Log.v("211","its tablet");
                 Bundle b = new Bundle();
                 b.putSerializable("movie",movieModule);
                 DetailFragment detailFragment = new DetailFragment();
@@ -66,9 +64,7 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
                 fTrans.replace(R.id.layout_pane2, detailFragment).commit();
 
             }else{
-                Log.v("211","phone");
                 Intent intent = new Intent(this,DetailActivity.class);
-               // Bundle b = new Bundle();
                 intent.putExtra(Intent.EXTRA_TEXT,movieModule);
                 startActivity(intent);
             }
@@ -78,7 +74,6 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
     public void setDefaultOnTablet(MovieModule movieModule) {
 
         if(twoPane) {
-            Log.v("211", "its tablet");
             Bundle b = new Bundle();
             b.putSerializable("movie", movieModule);
             DetailFragment detailFragment = new DetailFragment();

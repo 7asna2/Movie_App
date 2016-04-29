@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public abstract class FetchVideosAndReviewsTask extends AsyncTask<String,Void , String[]> {
     Context context;
     View rootView;
-    final String LOG_TAG = "videos";
+    final String LOG_TAG = FetchVideosAndReviewsTask.class.getSimpleName();
     String myUrl;
 
     public abstract void updateVideoList(Video videos[] );
@@ -72,62 +72,6 @@ public abstract class FetchVideosAndReviewsTask extends AsyncTask<String,Void , 
     }
 
 
-    class ReviewJSONParser {
-        final String RESULT = "results";
-        final String AUTHOR = "author";
-        final String CONTENT = "content";
-        String JSONstr;
-
-        public ReviewJSONParser(String JSONstr) {
-            this.JSONstr = JSONstr;
-        }
-
-        public Review[] getReviewsIDs() throws JSONException {
-            ArrayList<Review> reviewsArrays = new ArrayList<>();
-            JSONObject videosJson = new JSONObject(JSONstr);
-            JSONArray JSONVideosArray = videosJson.getJSONArray(RESULT);
-
-            for (int i = 0; i < JSONVideosArray.length(); i++) {
-                JSONObject video = JSONVideosArray.getJSONObject(i);
-                Review temp = new Review();
-                temp.author = video.getString(AUTHOR);
-                temp.content = video.getString(CONTENT);
-                reviewsArrays.add(temp);
-            }
-            return reviewsArrays.toArray(new Review[reviewsArrays.size()]);
-        }
-    }
-
-    class VideoJSONParser {
-        final String RESULT = "results";
-        final String SITE = "site";
-        final String KEY = "key";
-        final String YOUTUBE = "YouTube";
-        final String NAME="name";
-        String JSONstr;
-
-        public VideoJSONParser(String JSONstr) {
-            this.JSONstr = JSONstr;
-        }
-
-        public Video[] getVideos() throws JSONException {
-            ArrayList<Video> videosArray = new ArrayList<>();
-            JSONObject videosJson = new JSONObject(JSONstr);
-            JSONArray JSONVideosArray = videosJson.getJSONArray(RESULT);
-
-            for (int i = 0; i < JSONVideosArray.length(); i++) {
-                JSONObject video = JSONVideosArray.getJSONObject(i);
-                Video temp = new Video();
-                temp.Name=video.getString(NAME);
-                temp.site=video.getString(SITE);
-                temp.key=video.getString(KEY);
-                if (temp.site.equals(YOUTUBE))
-                    videosArray.add(temp);
-            }
-            return videosArray.toArray(new Video[videosArray.size()]);
-        }
-    }
-
     private URL getURL (String type,String ID) throws MalformedURLException {
         final String themoviesdpURL = "http://api.themoviedb.org/3/movie/";
         Uri uri;
@@ -135,7 +79,7 @@ public abstract class FetchVideosAndReviewsTask extends AsyncTask<String,Void , 
                 .buildUpon()
                 .appendPath(ID)
                 .appendPath(type)
-                //.appendPath("videos")
+                        //.appendPath("videos")
                 .appendQueryParameter("api_key", BuildConfig.api_key)
                 .build();
         myUrl = uri.toString();
@@ -203,6 +147,65 @@ public abstract class FetchVideosAndReviewsTask extends AsyncTask<String,Void , 
         }
         return JsonStr;
     }
+
+    // class parsing JSON for Reviews
+    class ReviewJSONParser {
+        final String RESULT = "results";
+        final String AUTHOR = "author";
+        final String CONTENT = "content";
+        String JSONstr;
+
+        public ReviewJSONParser(String JSONstr) {
+            this.JSONstr = JSONstr;
+        }
+
+        public Review[] getReviewsIDs() throws JSONException {
+            ArrayList<Review> reviewsArrays = new ArrayList<>();
+            JSONObject videosJson = new JSONObject(JSONstr);
+            JSONArray JSONVideosArray = videosJson.getJSONArray(RESULT);
+
+            for (int i = 0; i < JSONVideosArray.length(); i++) {
+                JSONObject video = JSONVideosArray.getJSONObject(i);
+                Review temp = new Review();
+                temp.author = video.getString(AUTHOR);
+                temp.content = video.getString(CONTENT);
+                reviewsArrays.add(temp);
+            }
+            return reviewsArrays.toArray(new Review[reviewsArrays.size()]);
+        }
+    }
+
+    //class parsing JSON for Videos
+    class VideoJSONParser {
+        final String RESULT = "results";
+        final String SITE = "site";
+        final String KEY = "key";
+        final String YOUTUBE = "YouTube";
+        final String NAME="name";
+        String JSONstr;
+
+        public VideoJSONParser(String JSONstr) {
+            this.JSONstr = JSONstr;
+        }
+
+        public Video[] getVideos() throws JSONException {
+            ArrayList<Video> videosArray = new ArrayList<>();
+            JSONObject videosJson = new JSONObject(JSONstr);
+            JSONArray JSONVideosArray = videosJson.getJSONArray(RESULT);
+
+            for (int i = 0; i < JSONVideosArray.length(); i++) {
+                JSONObject video = JSONVideosArray.getJSONObject(i);
+                Video temp = new Video();
+                temp.Name=video.getString(NAME);
+                temp.site=video.getString(SITE);
+                temp.key=video.getString(KEY);
+                if (temp.site.equals(YOUTUBE))
+                    videosArray.add(temp);
+            }
+            return videosArray.toArray(new Video[videosArray.size()]);
+        }
+    }
+
 
 }
 

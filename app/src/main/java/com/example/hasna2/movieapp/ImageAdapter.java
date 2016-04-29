@@ -17,8 +17,8 @@ import com.example.hasna2.movieapp.Models.MovieModule;
 public class ImageAdapter extends BaseAdapter {
     MovieModule[] movies;
     Context context;
-    String Adab_Tag = "huhu";//ImageAdabter.class.getCanonicalName();
-    String base_URL = "http://image.tmdb.org/t/p/";
+    private final String LOG_TAG =ImageAdapter.class.getCanonicalName();
+    private final String BASE_URL = "http://image.tmdb.org/t/p/";
     String size[] = {"w92", "w154", "w185", "w342", "w500", "w780", "original"};
 
     ImageAdapter(Context context, MovieModule[] movies) {
@@ -34,7 +34,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        return ""+base_URL + size[2] +movies[i].poster_path;
+        return ""+BASE_URL + size[3] +movies[i].poster_path;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
-        Log.v(Adab_Tag, "getting item" + i);
+        Log.v(LOG_TAG, "getting item" + i);
         ImageHolder holder = new ImageHolder();
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.poster, null);
@@ -53,7 +53,6 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             holder = (ImageHolder) view.getTag();
         }
-        Log.v(Adab_Tag, "complete poster path :" +getItem(i));
         new SaveAndGetImages(context,(String)getItem(i),holder.imageView).getImage(movies[i].id);
         return view;
     }

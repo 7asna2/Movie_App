@@ -20,8 +20,10 @@ import java.io.IOException;
 /**
  * Created by hasna2 on 17-Apr-16.
  */
+
+
 public class SaveAndGetImages {
-    final String LOG_TAG="saveimage";
+    final String LOG_TAG=SaveAndGetImages.class.getSimpleName();
     String image_path ;
     ImageView imageView;
     Context context;
@@ -31,6 +33,8 @@ public class SaveAndGetImages {
         this.image_path=image_path;
         this.imageView=imageView;
     }
+
+    // try to get the image from internal storage if not found  download it from picasso
     public void getImage (final String id){
         Bitmap bitmap= getThumbnail(id);
         if(bitmap==null) {
@@ -41,20 +45,20 @@ public class SaveAndGetImages {
                 public void onSuccess() {
                     BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
                     Bitmap bitmap1 = drawable.getBitmap();
-                    // Bitmap bitmap1=BitmapFactory.decodeResource(context.getResources(), R.id.poster_Element);
-                    if (bitmap1 == null) Log.v(LOG_TAG, "bitmap is nulll");
-                    if (saveImageToInternalStorage(bitmap1, id)) Log.v(LOG_TAG, "the image saved");
-
+                    if (saveImageToInternalStorage(bitmap1, id)) Log.v(LOG_TAG, "the image saved successfully");
                 }
-
                 @Override
                 public void onError() {
-
+                    Log.v(LOG_TAG, "Error downloading image");
                 }
             });
-        }else {imageView.setImageBitmap(bitmap);Log.v(LOG_TAG, "the image loaded successfully");}
+        }else {
+            imageView.setImageBitmap(bitmap);
+            Log.v(LOG_TAG, "the image loaded successfully");
+        }
     }
-    public boolean saveImageToInternalStorage(Bitmap image,String name) {
+
+    private boolean saveImageToInternalStorage(Bitmap image,String name) {
 
         File pictureFile =getOutputMediaFile(name);
         if (pictureFile == null) {
@@ -64,7 +68,7 @@ public class SaveAndGetImages {
         }
         try {
             Log.v(LOG_TAG,""+name+".png1");
-            FileOutputStream fos = new FileOutputStream(pictureFile);//context.openFileOutput(movies[i].id+".png", Context.MODE_PRIVATE);
+            FileOutputStream fos = new FileOutputStream(pictureFile);
             if(fos!=null)Log.v(LOG_TAG,""+name+".png2");
             image.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.close();
@@ -78,11 +82,10 @@ public class SaveAndGetImages {
         }
     }
 
-
-    public Bitmap getThumbnail(String name) {
+    private Bitmap getThumbnail(String name) {
         Bitmap thumbnail = null;
         try {
-            File filePath = getOutputMediaFile(name);//context.getFileStreamPath(filename);
+            File filePath = getOutputMediaFile(name);
             if(filePath==null)Log.v(LOG_TAG,"file is null cant get it");
             FileInputStream fi = new FileInputStream(filePath);
             thumbnail = BitmapFactory.decodeStream(fi);
@@ -92,7 +95,8 @@ public class SaveAndGetImages {
         return thumbnail;
     }
 
-    public   File getOutputMediaFile(String name){
+    //get directory for the image
+    public File getOutputMediaFile(String name){
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
                 + "/Android/data/"
                 + context.getPackageName()

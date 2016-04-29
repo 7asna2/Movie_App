@@ -4,7 +4,6 @@ package com.example.hasna2.movieapp.Data;
  * Created by hasna2 on 15-Apr-16.
  */
 
-import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -16,12 +15,11 @@ import com.example.hasna2.movieapp.Models.MovieModule;
 import java.util.ArrayList;
 
 
-
+/* class that deals with the data using content provider */
 public class Database {
 
-    String LOG_TAG = ContentProvider.class.getSimpleName();
+    String LOG_TAG = Database.class.getSimpleName();
     Context context;
-//    DatabaseHelper db;
     Cursor cur;
 
     public Database(Context context) {
