@@ -15,11 +15,15 @@ import com.example.hasna2.movieapp.Models.MovieModule;
 public class MainActivity extends ActionBarActivity implements MovieListener {
     MoviesFragment moviesFragment;
     boolean twoPane ;
+    Bundle savedInstanceState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.savedInstanceState=savedInstanceState;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         twoPane =(findViewById(R.id.layout_pane2)!=null);
+        
 
         if (savedInstanceState == null) {
             moviesFragment = new MoviesFragment();
@@ -73,14 +77,14 @@ public class MainActivity extends ActionBarActivity implements MovieListener {
     @Override
     public void setDefaultOnTablet(MovieModule movieModule) {
 
-        if(twoPane) {
+        if (twoPane && savedInstanceState == null) {
+
             Bundle b = new Bundle();
             b.putSerializable("movie", movieModule);
             DetailFragment detailFragment = new DetailFragment();
             detailFragment.setArguments(b);
             FragmentTransaction fTrans = getSupportFragmentManager().beginTransaction();
             fTrans.replace(R.id.layout_pane2, detailFragment).commit();
-
         }
 
 
