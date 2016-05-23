@@ -1,7 +1,6 @@
 # Movie_App
 Udacity course graduation project
 ## Features
-*   
 *   you can discover the most popular and top rated movies and view thier details.
 *   you can watch movies' trailers and read their reviews.
 *   you can mark movie as favorites and view them with detials offline.
